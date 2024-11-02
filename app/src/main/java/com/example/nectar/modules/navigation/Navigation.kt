@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nectar.modules.login.LoginScreen
+import com.example.nectar.modules.login.PhoneLoginScreen
 import com.example.nectar.modules.onboarding.OnboardingScreen
 import com.example.nectar.modules.splash.SplashScreen
 import kotlinx.coroutines.delay
@@ -35,7 +36,11 @@ fun NavigationRoot() {
         }
 
         composable(ScreenRoot.LoginScreen.router) {
-            LoginScreen() // Display the login screen
+            LoginScreen(navController) // Display the login screen
+        }
+
+        composable(ScreenRoot.PhoneLoginScreen.router) {
+            PhoneLoginScreen(navController) // Display the login screen
         }
     }
 }
@@ -45,4 +50,5 @@ sealed class ScreenRoot(val router: String) {
     object SplashScreen : ScreenRoot("splash")
     object LoginScreen : ScreenRoot("login")
     object OnboardingScreen : ScreenRoot("onboarding")
+    object PhoneLoginScreen : ScreenRoot("phonelogin")
 }

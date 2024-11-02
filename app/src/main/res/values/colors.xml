@@ -10,5 +10,8 @@
 
     //App color
     <color name="primaryColor">#53B175</color>
+    <color name="hint_text_color">#CB808080</color>
+    <color name="google_btn_color">#5383EC</color>
+    <color name="facebook_btn_color">#4A66AC</color>
 
 </resources>
