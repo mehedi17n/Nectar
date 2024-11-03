@@ -1,6 +1,8 @@
 package com.example.nectar.modules.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,14 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -36,10 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nectar.R
 import com.example.nectar.modules.components.CustomButton
-import com.example.nectar.modules.components.CustomNumberInputButton
-import com.example.nectar.modules.navigation.ScreenRoot
 import com.example.nectar.ui.theme.gilroyFontFamily
+import androidx.compose.runtime.*
+import androidx.compose.ui.focus.focusRequester
+import com.example.nectar.modules.navigation.ScreenRoot
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
     Column(
@@ -78,15 +87,76 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        CustomNumberInputButton(
-            onClick = {
-                // Navigate to the LoginScreen
-                navController.navigate(ScreenRoot.PhoneLoginScreen.router) {
-                    // Clear the back stack or pop up to specific destinations
-                    popUpTo(ScreenRoot.LoginScreen.router) { inclusive = false }
+        // State to hold the input value
+        var inputText by remember { mutableStateOf("") }
+
+        // Focus state for the input field
+        var isFocused by remember { mutableStateOf(false) }
+
+        // TextField for phone number input with Bangladesh flag icon and +880 prefix
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(0.85f).padding(start = 2.dp)
+        ) {
+            // Bangladesh flag icon
+            Image(
+                painter = painterResource(id = R.drawable.ic_bangladesh_flag),
+                contentDescription = "Bangladesh Flag",
+                modifier = Modifier.size(22.dp)
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // +880 prefix Text
+            Text(
+                text = "+880",
+                fontSize = 18.sp,
+                letterSpacing = 2.sp,
+            )
+
+            var text = remember { mutableStateOf("") }
+
+            val change: (String) -> Unit = { input ->
+                if (input.length <= 10 && (input.length != 2 || input[0] == '1')) {
+                    text.value = input
+                }
+            }
+
+            TextField(
+                value = inputText,
+                onValueChange = { inputText = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                        // Navigate to the next page when focused
+                        if (isFocused) {
+                            navController.navigate(ScreenRoot.PhoneLoginScreen.router) {
+                                // Clear the back stack or pop up to specific destinations
+                            popUpTo(ScreenRoot.LoginScreen.router) { inclusive = false }
+                    }
                 }
             },
-            icon = painterResource(id = R.drawable.ic_bangladesh_flag)
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    fontSize = 18.sp,
+                    letterSpacing = 2.sp
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+            )
+        }
+
+        // Bottom line
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.85f)
+                .padding(start = 0.dp)
+                .height(1.dp)
+                .background(Color.Gray)
         )
 
         // Spacer between TextField and below Text

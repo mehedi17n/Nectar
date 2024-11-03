@@ -99,7 +99,11 @@ fun PhoneLoginScreen(navController: NavController) {
                     .size(36.dp)
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .clickable { navController.popBackStack() }
+                    .clickable {
+                        // Clear focus to prevent the keyboard from showing/hiding
+                        localFocusManager.clearFocus()
+                        navController.popBackStack()
+                    }
             )
 
             Spacer(modifier = Modifier.height(30.dp))
